@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, FlatList, Switch, Picker } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, FlatList, Switch, Alert, ScrollView } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+
 
 const PaceChart = () => {
   const [raceDistance, setRaceDistance] = useState('');
@@ -16,9 +18,9 @@ const PaceChart = () => {
     const paceIncrement = 5; // Pace increment in seconds
     const raceDistanceMiles = parseFloat(raceDistance);
     const paceData = [];
-    let paceSeconds = 0;
+    let paceSeconds = 4 * 60;
 
-    for (let i = 0; i < raceDistanceMiles; i++) {
+    while (paceSeconds <= 9 * 60) {
       const milePace = secondsToPace(paceSeconds);
       paceData.push({ milePace, time: paceSeconds * raceDistanceMiles });
       paceSeconds += paceIncrement;
@@ -28,9 +30,18 @@ const PaceChart = () => {
   };
 
   const secondsToPace = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    if (seconds >= 3600) {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const remainingSeconds = seconds % 60;
+      return `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    }
+
+    if (seconds < 3600) {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    }
   };
 
   const renderItem = ({ item }) => (
@@ -58,7 +69,7 @@ const PaceChart = () => {
                 value={toggleInput} 
             />
         </View>
-        {/* {toggleInput ? (
+        {toggleInput ? (
             <View>
                 <TextInput
                     style={styles.input}
@@ -69,25 +80,30 @@ const PaceChart = () => {
                 />
             </View>
         ) : (
-            <View>
+            <View style={styles.input}>
                 <Picker
-                    selectedValue={raceDistance}
-                    // style={styles.input}
+                    selectedValue={raceDistance}                    
                     onValueChange={(itemValue, itemIndex) => setRaceDistance(itemValue)}
+                    prompt='Select race distance'
+                    styles={styles.picker}
                 >
+                    <Picker.Item label="Select a race distance" value="" />
                     <Picker.Item label="5K" value="3.1" />
                     <Picker.Item label="10K" value="6.2" />
                     <Picker.Item label="Half Marathon" value="13.1" />
                     <Picker.Item label="Marathon" value="26.2" />
                 </Picker>
             </View>
-        )} */}
+        )}
         <Button title="Generate Pace Chart" onPress={generatePaceData} />
-        <FlatList
-            data={paceData}
-            renderItem={renderItem}
-            keyExtractor={(item, index) => index.toString()}
-        />
+        <ScrollView style={styles.scrollView}>
+          {paceData.map((item, index) => (
+            <View key={index} style={styles.row}>
+              <Text style={styles.cell}>{item.milePace} min/mile</Text>
+              <Text style={styles.cell}>{secondsToPace(item.time)}</Text>
+            </View>
+          ))}
+        </ScrollView>
     </View>
   );
 };
@@ -126,6 +142,13 @@ const styles = StyleSheet.create({
   },
   cell: {
     fontSize: 16,
+  },
+  picker: {
+    height: 50,
+  },
+  scrollView: {
+    width: '100%',
+    padding: 10,
   },
 });
 
