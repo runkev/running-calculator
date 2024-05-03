@@ -12,7 +12,16 @@ const Stack = createNativeStackNavigator();
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Home'>
+      <Stack.Navigator 
+        initialRouteName='Home'
+        screenOptions={{
+          headerStyle: styles.navbar,
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      >
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Pace Calculator" component={RunningPaceCalculator} />
         <Stack.Screen name="Pace Chart" component={PaceChart} />
@@ -21,5 +30,11 @@ function App() {
     </NavigationContainer>
   );
 }
+
+const styles = {
+  navbar: {
+    backgroundColor: '#8D2003',
+  },
+};
 
 export default App;
