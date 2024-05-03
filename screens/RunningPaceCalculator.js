@@ -6,12 +6,17 @@ const RunningPaceCalculator = () => {
   const [time, setTime] = useState('');
   const [pace, setPace] = useState('');
   const [selectedOption, setSelectedOption] = useState('PACE');
+  const [units, setUnits] = useState('Miles');
 
   const radios = ['DISTANCE', 'PACE', 'TIME'];
 
   const handlePress = (radio) => {
     setSelectedOption(radio);
   };
+
+  function handleUnitChange() {
+    setUnits(units === 'Miles' ? 'Kilometers' : 'Miles');
+  }
 
   function handleReset() {
     setDistance('');
@@ -83,31 +88,33 @@ const RunningPaceCalculator = () => {
           </Pressable>
         ))}
       </View>
-      {selectedOption !== 'DISTANCE' && (
-        <TextInput
-          style={styles.input}
-          placeholder="Distance (miles)"
-          keyboardType="numeric"
-          value={distance}
-          onChangeText={setDistance}
-        />        
-      )}
-      {selectedOption !== 'TIME' && (
-        <TextInput
-          style={styles.input}
-          placeholder="Time (hh:mm:ss)"
-          value={time}
-          onChangeText={setTime}
-        />        
-      )}
-      {selectedOption !== 'PACE' && (
-        <TextInput
-          style={styles.input}
-          placeholder="Pace (mm:ss)"
-          value={pace}
-          onChangeText={setPace}
-        />
-      )}
+      <View style={styles.inputBox}>
+        {selectedOption !== 'DISTANCE' && (
+          <TextInput
+            style={styles.input}
+            placeholder="Distance (miles)"
+            keyboardType="numeric"
+            value={distance}
+            onChangeText={setDistance}
+          />        
+        )}
+        {selectedOption !== 'TIME' && (
+          <TextInput
+            style={styles.input}
+            placeholder="Time (hh:mm:ss)"
+            value={time}
+            onChangeText={setTime}
+          />        
+        )}
+        {selectedOption !== 'PACE' && (
+          <TextInput
+            style={styles.input}
+            placeholder="Pace (mm:ss)"
+            value={pace}
+            onChangeText={setPace}
+          />
+        )}
+      </View>
       <Pressable 
         onPress={() => selectedOption === 'DISTANCE' ? calculateDistance() : selectedOption === 'TIME' ? calculateTime() : calculatePace()} 
         style={({pressed}) => [
@@ -132,19 +139,36 @@ const RunningPaceCalculator = () => {
         </Text>
       </View>
 
-      <Pressable
-        onPress={handleReset}
-        style={({pressed}) => [
-          styles.button,
-          {
-            backgroundColor: '#8D2003',
-            borderColor: pressed ? '#8D2003' : '#ccc',
-            elevation: pressed ? 0 : 12,
-          },
-        ]}
-      >
-        <Text style={styles.buttonText}>RESET</Text>
-      </Pressable>
+      <View style={styles.bottom}>
+        <View style={styles.buttonSection}>
+          <Pressable
+            onPress={handleUnitChange}
+            style={({pressed}) => [
+              styles.bottomBtn,
+              {
+                backgroundColor: '#8D2003',
+                borderColor: pressed ? '#8D2003' : '#ccc',
+                elevation: pressed ? 0 : 12,
+              },
+            ]}
+          >
+            <Text style={styles.buttonText}>{units}</Text>
+          </Pressable>
+          <Pressable
+            onPress={handleReset}
+            style={({pressed}) => [
+              styles.bottomBtn,
+              {
+                backgroundColor: '#8D2003',
+                borderColor: pressed ? '#8D2003' : '#ccc',
+                elevation: pressed ? 0 : 12,
+              },
+            ]}
+          >
+            <Text style={styles.buttonText}>RESET</Text>
+          </Pressable>
+        </View>
+      </View>
     </View>
   );
 };
@@ -152,10 +176,25 @@ const RunningPaceCalculator = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
     backgroundColor: '#E6E8E6'
+  },
+  buttonSection: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+    width: '100%',
+  },
+  inputBox: {
+    width: '100%',
+    marginBottom: 20,
+  },
+  bottom: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    backgroundColor: '#E6E8E6',
   },
   input: {
     width: '100%',
@@ -178,7 +217,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 17,
+    marginBottom: 20,
   },
   outputText: {
     fontSize: 18,
@@ -187,7 +226,7 @@ const styles = StyleSheet.create({
   radiobox: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginBottom: 40,
   },
   radio: {
     flex: 1,
@@ -220,6 +259,13 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '100%',
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: '#8D2003',
+    marginBottom: 30,
+  },
+  bottomBtn: {
+    width: '30%',
     padding: 10,
     borderRadius: 5,
     backgroundColor: '#8D2003',
