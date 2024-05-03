@@ -1,8 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import * as Location from 'expo-location';
 
 const Route = () => {
-  // Sample route steps data
+  const [location, setLocation] = useState();
+
+  useEffect(() => {
+    const getPermissions = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Permission to access location was denied');
+        return;
+      }
+
+      let currentLocation = await Location.getCurrentPositionAsync({});
+      setLocation(`Latitude: ${currentLocation.coords.latitude}, Longitude: ${currentLocation.coords.longitude}`);
+    };
+
+    getPermissions();
+  }, [])
+
   const routeSteps = [
     'Start at the entrance of the park.',
     'Turn left onto Main Street.',
@@ -13,6 +30,8 @@ const Route = () => {
 
   return (
     <View style={styles.container}>
+      <Text>Current Location:</Text>
+      <Text>{location}</Text>
       <Text style={styles.heading}>Route Steps</Text>
       {routeSteps.map((step, index) => (
         <View key={index} style={styles.stepContainer}>
