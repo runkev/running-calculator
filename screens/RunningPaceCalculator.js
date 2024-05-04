@@ -129,12 +129,8 @@ const RunningPaceCalculator = () => {
         <Text style={styles.buttonText}>CALCULATE {selectedOption}</Text>
       </Pressable>
 
-      <View
-        style={styles.output}
-      >
-        <Text
-          style={styles.outputText}
-        >
+      <View style={styles.output}>
+        <Text style={styles.outputText}>
           {selectedOption === 'DISTANCE' ? `${distance} miles` : selectedOption === 'TIME' ? `${time}` : `${pace} / mile`}
         </Text>
       </View>
@@ -191,8 +187,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   bottom: {
-    position: 'absolute',
-    bottom: 0,
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
     width: '100%',
     backgroundColor: '#E6E8E6',
   },
